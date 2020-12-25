@@ -4,6 +4,8 @@
 For this, a wardriving DB is needed. Currently, a .csv file exported from WiGLE app is supported.
 Those two files are compared and their conjunction (based on MAC addresses) is then written to output file.
 
+You can then feed the result to [OneShot-GPS-Visualizer](https://github.com/eda-abec/OneShot-GPS-Visualizer), which displays it on map.
+
 This project is still in development, any suggestions and pull requests are welcome :)
 
 
@@ -83,3 +85,5 @@ Date: 12/2020\
 Based on and Thanks to:
 - [OneShot](https://github.com/drygdryg/OneShot)
 - [WiGLE.net](https://github.com/wiglenet)
+
+See also [OneShot-GPS-Visualizer](https://github.com/eda-abec/OneShot-GPS-Visualizer)
