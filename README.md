@@ -20,8 +20,15 @@ Expects specific filenames.
 ```
 make
 
+# same as
+python3 os_gps_merge.py stored.csv Wigle*.csv stored_gps.csv
+
+
 # prints running time of the script
 make benchmark
+
+# delete the results file and run again
+make force
 ```
 
 From help:
