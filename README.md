@@ -10,6 +10,7 @@ This project is still in development, any suggestions and pull requests are welc
 
 
 ## Usage
+The script works only with Python3, older 2.x is not supported.
 
 Makefile is included, default target runs the script.\
 Expects specific filenames.
