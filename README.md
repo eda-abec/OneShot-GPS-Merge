@@ -78,6 +78,7 @@ delimiter=';'
 ## TODOs
 
 - better name
+- integrate DB from https://github.com/drygdryg/wigle_companion
 - some universal output format?
     - KML?
 - matching by time
