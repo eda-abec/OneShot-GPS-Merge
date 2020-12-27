@@ -74,12 +74,14 @@ delimiter=';'
 - some universal output format?
     - KML?
 - matching by time
+- also match saved PINs
 - small TODOs
     - catch KeyboardInterrupt
     - parameters
     - add switch for WiGLE encoding
     - quiet mode
     - output to stdout?
+    - handle missing/incorrect input files
 
 ## Acknowledgements
 
