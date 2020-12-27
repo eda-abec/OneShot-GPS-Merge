@@ -1,8 +1,10 @@
-# OneShot report to Coordinates Merger
+# OneShot report with Coordinates Merger
 
 **os_gps_merge.py** is a little script to match WiFis from reports of [OneShot](https://github.com/drygdryg/OneShot) (`stored.csv`) to their real-life coordinates.
-For this, a wardriving DB is needed. Currently, a .csv file exported from WiGLE app is supported.
+For this, a wardriving DB is needed. Currently, a .csv file exported from [WiGLE app](https://wigle.net/tools) is supported.
 Those two files are compared and their conjunction (based on MAC addresses) is then written to output file.
+
+Matched coordinates are those with highest signal for given AP.
 
 You can then feed the result to [OneShot-GPS-Visualizer](https://github.com/eda-abec/OneShot-GPS-Visualizer), which displays it on map.
 
