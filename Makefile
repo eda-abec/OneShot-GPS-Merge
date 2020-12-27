@@ -16,3 +16,5 @@ benchmark:
 
 clean:
 	rm -f $(OUTPUT)
+
+force: clean $(OUTPUT)
