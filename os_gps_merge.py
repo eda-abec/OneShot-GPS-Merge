@@ -45,6 +45,13 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "-d", "--delimiter",
+    type = str,
+    default = ";",
+    help = "Delimiter for output file, like semicolon (default), comma, or anything else"
+)
+
+parser.add_argument(
     "output",
     type = str,
     default = "stored_gps.csv",
@@ -106,7 +113,7 @@ matchedMACs = [dict(OS_row, **{latname: W_row[latname]}, **{longname: W_row[long
 print("[result] Matched {} (~{} %) networks with their coordinates".format(len(matchedMACs), round(100 * len(matchedMACs) / len(APs))))
 
 with open(args.output, 'w', encoding="utf-8") as csvfile:
-    writer = csv.DictWriter(csvfile, header, delimiter=';')
+    writer = csv.DictWriter(csvfile, header, delimiter=args.delimiter)
     writer.writeheader()
     writer.writerows(matchedMACs)
 
