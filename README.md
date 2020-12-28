@@ -80,12 +80,14 @@ delimiter=';'
 - better name
 - integrate DB from https://github.com/drygdryg/wigle_companion
 - some universal output format?
+    - choose columns and their order in output .csv
     - KML?
 - matching by time
 - also match saved PINs
 - small TODOs
     - catch KeyboardInterrupt
     - parameters
+    - parameter to choose delimiter
     - add switch for WiGLE encoding
     - quiet mode
     - output to stdout?
