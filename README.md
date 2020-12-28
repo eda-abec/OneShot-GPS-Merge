@@ -33,7 +33,7 @@ make force
 
 From help:
 ```
-usage: os_gps_a.py [-h] OneShot_report WiGLE_file [WiGLE_file ...] output
+usage: os_gps_a.py [-h] [-d DELIMITER] OneShot_report WiGLE_file [WiGLE_file ...] output
 
 OneShot GPS Merger (c) 2020 eda-abec
 based on OneShotPin 0.0.2 (c) 2017 rofl0r, modded by drygdryg
@@ -47,6 +47,9 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  -d DELIMITER, --delimiter DELIMITER
+                        Delimiter for output file, like semicolon (default), comma, or anything else
+
 
 Example: os_gps_merge.py stored.csv Wigle.csv stored_gps.csv
 ```
@@ -71,7 +74,7 @@ delimiter=','
 Columns are same as in OneShot report, with `CurrentLatitude` and `CurrentLongitude` added to end.
 ```
 encoding="utf-8"
-delimiter=';'
+delimiter= default is ';', could be changed by -d
 ```
 
 
@@ -87,7 +90,6 @@ delimiter=';'
 - small TODOs
     - catch KeyboardInterrupt
     - parameters
-    - parameter to choose delimiter
     - add switch for WiGLE encoding
     - quiet mode
     - output to stdout?
