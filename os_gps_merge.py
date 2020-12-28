@@ -8,6 +8,7 @@ import re
 
 latname = "CurrentLatitude"
 longname = "CurrentLongitude"
+signal = "RSSI"
 
 def strongest_signal (AP):
     return int(AP["RSSI"])
@@ -67,7 +68,7 @@ for row in reader:
     APs.append(row)
 
 header =  list(APs[0].keys())
-header += [latname] + [longname]       # tmp
+header += [latname] + [longname] + [signal]      # tmp
 
 print("[OneShot] Loaded {} networks".format(len(APs)))
 
@@ -98,7 +99,7 @@ print("[Wigle] {} of which with WPS".format(len(locations)))
 
 
 # the actual matching
-matchedMACs = [dict(OS_row, **{latname: W_row[latname]}, **{longname: W_row[longname]})
+matchedMACs = [dict(OS_row, **{latname: W_row[latname]}, **{longname: W_row[longname]}, **{signal: W_row[signal]})
                for OS_row in APs for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
 
 
