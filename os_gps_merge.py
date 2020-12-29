@@ -4,6 +4,7 @@
 import argparse
 import csv
 import re
+import os
 
 
 latname = "CurrentLatitude"
@@ -52,6 +53,13 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "-p", "--PINs_folder",
+    type = str,
+    default = None,
+    help = "A folder with saved PINs from Pixiewps"
+)
+
+parser.add_argument(
     "output",
     type = str,
     default = "stored_gps.csv",
@@ -79,6 +87,19 @@ header += [latname] + [longname] + [signal]      # tmp
 
 print("[OneShot] Loaded {} networks".format(len(APs)))
 
+
+PINs_folder = args.PINs_folder
+if (PINs_folder != None):
+    for PIN_file in os.listdir(PINs_folder):
+        row = {}
+        reader = open(PINs_folder + "/" + PIN_file)     # encoding should not matter for only digits
+        row["BSSID"] = str(PIN_file).replace(".run", "").lower()
+        # add colons. https://stackoverflow.com/a/61669445
+        row["BSSID"] = ':'.join(row["BSSID"][i:i+2] for i in range(0,12,2))
+        row["WPS PIN"] = reader.readline()
+     #   row["Date"] = ctime(os.path.getmime(PIN_file))     # TODO
+        APs.append(row)
+    
 
 locations = []
 for file_path in args.WiGLE_file:
