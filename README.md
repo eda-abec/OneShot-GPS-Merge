@@ -33,7 +33,8 @@ make force
 
 From help:
 ```
-usage: os_gps_a.py [-h] [-d DELIMITER] OneShot_report WiGLE_file [WiGLE_file ...] output
+usage: os_gps_a.py [-h] [-d DELIMITER] [-p PINS_FOLDER] OneShot_report
+                   WiGLE_file [WiGLE_file ...] output
 
 OneShot GPS Merger (c) 2020 eda-abec
 based on OneShotPin 0.0.2 (c) 2017 rofl0r, modded by drygdryg
@@ -49,7 +50,8 @@ optional arguments:
   -h, --help            show this help message and exit
   -d DELIMITER, --delimiter DELIMITER
                         Delimiter for output file, like semicolon (default), comma, or anything else
-
+  -p PINS_FOLDER, --PINs_folder PINS_FOLDER
+                        A folder with saved PINs from Pixiewps
 
 Example: os_gps_merge.py stored.csv Wigle.csv stored_gps.csv
 ```
@@ -71,7 +73,7 @@ delimiter=','
 ```
 
 ### Output
-Columns are same as in OneShot report, with `CurrentLatitude` and `CurrentLongitude` added to end.
+Columns are same as in OneShot report, with `CurrentLatitude`, `CurrentLongitude` and `RSSI` added to end.
 ```
 encoding="utf-8"
 delimiter= default is ';', could be changed by -d
@@ -86,7 +88,7 @@ delimiter= default is ';', could be changed by -d
     - choose columns and their order in output .csv
     - KML?
 - matching by time
-- also match saved PINs
+- option to print unmatched APs to another file
 - small TODOs
     - catch KeyboardInterrupt
     - parameters
