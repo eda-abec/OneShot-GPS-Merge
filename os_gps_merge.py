@@ -88,18 +88,19 @@ header += [latname] + [longname] + [signal]      # tmp
 print("[OneShot] Loaded {} networks".format(len(APs)))
 
 
-PINs_folder = args.PINs_folder
-if (PINs_folder != None):
-    for PIN_file in os.listdir(PINs_folder):
+PIN_APs_folder = args.PINs_folder
+PIN_APs = []
+if (PIN_APs_folder != None):
+    for PIN_file in os.listdir(PIN_APs_folder):
         row = {}
-        reader = open(PINs_folder + "/" + PIN_file)     # encoding should not matter for only digits
+        reader = open(PIN_APs_folder + "/" + PIN_file)     # encoding should not matter for digits only
         row["BSSID"] = str(PIN_file).replace(".run", "").lower()
         # add colons. https://stackoverflow.com/a/61669445
         row["BSSID"] = ':'.join(row["BSSID"][i:i+2] for i in range(0,12,2))
         row["WPS PIN"] = reader.readline()
      #   row["Date"] = ctime(os.path.getmime(PIN_file))     # TODO
-        APs.append(row)
-    
+        PIN_APs.append(row)
+    print("[OneShot] Loaded {} PIN-only networks".format(len(PIN_APs)))
 
 locations = []
 for file_path in args.WiGLE_file:
@@ -130,11 +131,18 @@ print("[Wigle] {} of which with WPS".format(len(locations)))
 matchedMACs = [dict(OS_row, **{latname: W_row[latname]}, **{longname: W_row[longname]}, **{signal: W_row[signal]})
                for OS_row in APs for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
 
+matchedMACsPIN = [dict(OS_row, **{latname: W_row[latname]}, **{longname: W_row[longname]}, **{signal: W_row[signal]}, **{"ESSID": W_row["SSID"]})
+               for OS_row in PIN_APs for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
+
 
 print("[result] Matched {} (~{} %) networks with their coordinates".format(len(matchedMACs), round(100 * len(matchedMACs) / len(APs))))
+
+if (PIN_APs_folder != None):
+    print("[result] Matched {} (~{} %) PIN-only networks with their coordinates".format(len(matchedMACsPIN), round(100 * len(matchedMACsPIN) / len(PIN_APs))))
 
 with open(args.output, 'w', encoding="utf-8") as csvfile:
     writer = csv.DictWriter(csvfile, header, delimiter=args.delimiter)
     writer.writeheader()
     writer.writerows(matchedMACs)
+    writer.writerows(matchedMACsPIN)
 
