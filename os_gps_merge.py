@@ -87,6 +87,10 @@ header += [latname] + [longname] + [signal]      # tmp
 
 print("[OneShot] Loaded {} networks".format(len(APs)))
 
+unique_APs = {i["BSSID"]:i for i in APs}.values()
+if len(unique_APs) < len(APs):
+    print("[OneShot] Found {} duplicated APs!".format(len(APs) - len(unique_APs)))
+    APs = unique_APs
 
 PIN_APs_folder = args.PINs_folder
 PIN_APs = []
@@ -101,6 +105,12 @@ if (PIN_APs_folder != None):
      #   row["Date"] = ctime(os.path.getmime(PIN_file))     # TODO
         PIN_APs.append(row)
     print("[OneShot] Loaded {} PIN-only networks".format(len(PIN_APs)))
+    
+    unique_PIN_APs = [PIN_row["BSSID"] for OS_row in APs for PIN_row in PIN_APs if OS_row["BSSID"] == PIN_row["BSSID"]]
+    if len(unique_PIN_APs) > 0:
+        print('[OneShot] Found {} APs in both "{}" and "{}"!'.format(len(unique_PIN_APs), args.OneShot_report, PIN_APs_folder))
+        # for now, uncomment this line to show them
+       # print(unique_PIN_APs)
 
 locations = []
 for file_path in args.WiGLE_file:
