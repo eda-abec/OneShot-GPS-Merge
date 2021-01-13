@@ -5,10 +5,10 @@ OUTPUT = stored_gps.csv
 all: $(OUTPUT)
 
 $(OUTPUT):
-	$(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv $(OUTPUT)
+	$(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv $(OUTPUT) -p pins/
 
 benchmark:
-	time $(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv $(OUTPUT)
+	time $(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv $(OUTPUT) -p pins/
 
 # needs more work
 #matched: $(OUTPUT)
