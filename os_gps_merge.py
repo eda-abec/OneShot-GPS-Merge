@@ -90,6 +90,9 @@ print("[OneShot] Loaded {} networks".format(len(APs)))
 unique_APs = {i["BSSID"]:i for i in APs}.values()
 if len(unique_APs) < len(APs):
     print("[OneShot] Found {} duplicated APs!".format(len(APs) - len(unique_APs)))
+    duplicates = [AP for AP in APs if AP not in unique_APs]
+    # to print duplicates, uncomment the following line
+   # print([AP["ESSID"] for AP in duplicates])
     APs = unique_APs
 
 PIN_APs_folder = args.PINs_folder
@@ -101,16 +104,22 @@ if (PIN_APs_folder != None):
         row["BSSID"] = str(PIN_file).replace(".run", "").lower()
         # add colons. https://stackoverflow.com/a/61669445
         row["BSSID"] = ':'.join(row["BSSID"][i:i+2] for i in range(0,12,2))
-        row["WPS PIN"] = reader.readline()
+        row["WPS PIN"] = reader.readline().replace("\n", "")
      #   row["Date"] = ctime(os.path.getmime(PIN_file))     # TODO
         PIN_APs.append(row)
     print("[OneShot] Loaded {} PIN-only networks".format(len(PIN_APs)))
     
-    unique_PIN_APs = [PIN_row["BSSID"] for OS_row in APs for PIN_row in PIN_APs if OS_row["BSSID"] == PIN_row["BSSID"]]
+    unique_PIN_APs = [PIN_row["BSSID"] for OS_row in APs for PIN_row in PIN_APs if OS_row["BSSID"] == PIN_row["BSSID"] and OS_row["WPS PIN"] == PIN_row["WPS PIN"]]
     if len(unique_PIN_APs) > 0:
         print('[OneShot] Found {} APs in both "{}" and "{}"!'.format(len(unique_PIN_APs), args.OneShot_report, PIN_APs_folder))
         # for now, uncomment this line to show them
        # print(unique_PIN_APs)
+    
+    unique_colliding_PIN_APs = [PIN_row["BSSID"] for OS_row in APs for PIN_row in PIN_APs if OS_row["BSSID"] == PIN_row["BSSID"] and OS_row["WPS PIN"] != PIN_row["WPS PIN"]]
+    if len(unique_colliding_PIN_APs) > 0:
+        print('[OneShot] Found {} APs in both "{}" and "{}" with different PIN!'.format(len(unique_colliding_PIN_APs), args.OneShot_report, PIN_APs_folder))
+        # for now, uncomment this line to show them
+       # print(unique_colliding_PIN_APs)
 
 locations = []
 for file_path in args.WiGLE_file:
