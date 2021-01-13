@@ -5,6 +5,7 @@ import argparse
 import csv
 import re
 import os
+import signal as sig
 
 
 latname = "CurrentLatitude"
@@ -14,6 +15,10 @@ signal = "RSSI"
 def strongest_signal (AP):
     return int(AP["RSSI"])
 
+def signal_handler(signal, frame):
+        print ("Interrupted, exitting...")
+        exit(0)
+sig.signal(sig.SIGINT, signal_handler)
 
 parser = argparse.ArgumentParser (
     description = "OneShot GPS Merger (c) 2020 eda-abec\n" +
