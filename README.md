@@ -21,7 +21,7 @@ Expects specific filenames.
 make
 
 # same as
-python3 os_gps_merge.py stored.csv Wigle*.csv stored_gps.csv
+python3 os_gps_merge.py stored.csv wigle/Wigle*.csv stored_gps.csv -p pins/
 
 
 # prints running time of the script
