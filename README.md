@@ -90,7 +90,6 @@ delimiter= default is ';', could be changed by -d
 - matching by time
 - option to print unmatched APs to another file
 - small TODOs
-    - catch KeyboardInterrupt
     - parameters
     - add switch for WiGLE encoding
     - quiet mode
