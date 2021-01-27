@@ -6,6 +6,7 @@ import csv
 import re
 import os
 import signal as sig
+import simplekml
 
 
 latname = "CurrentLatitude"
@@ -62,6 +63,20 @@ parser.add_argument(
     type = str,
     default = None,
     help = "A folder with saved PINs from Pixiewps"
+)
+
+parser.add_argument(
+    "-k", "--kml-output",
+    type = str,
+    default = None,
+    help = "Specifies filename for KML output"
+)
+
+parser.add_argument(
+    "--kml-pins",
+    type = str,
+    default = None,
+    help = "Save PIN-only networks to separate KML file. If not specified, written to default KML file"
 )
 
 parser.add_argument(
@@ -183,3 +198,29 @@ with open(args.output, 'w', encoding="utf-8") as csvfile:
             writer.writerows(matchedMACsPIN)
     else:
         writer.writerows(matchedMACsPIN)
+
+if args.kml_output != None:
+    stylePSK = simplekml.Style()
+    #TODO give then colors and so
+    
+    stylePIN = simplekml.Style()
+    
+    kml = simplekml.Kml()
+    
+    for row in matchedMACsPIN:
+        pnt = kml.newpoint(name=row["ESSID"], coords=[(row[longname],row[latname])])
+        pnt.description = "BSSID: " + row["BSSID"]
+        pnt.style = stylePIN
+
+    if args.kml_pins != None:
+        kml.save(args.kml_pins)
+        kml = simplekml.Kml()
+
+    
+    for row in matchedMACs:
+        pnt = kml.newpoint(name=row["ESSID"], coords=[(row[longname],row[latname])])
+        pnt.timestamp.when = row["Date"]
+        pnt.description = "BSSID: " + row["BSSID"]
+        pnt.style = stylePSK
+    
+    kml.save(args.kml_output)
