@@ -58,17 +58,24 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-p", "--PINs_folder",
+    "-p", "--pins_folder",
     type = str,
     default = None,
     help = "A folder with saved PINs from Pixiewps"
 )
 
 parser.add_argument(
+    "--pins-output",
+    type = str,
+    default = None,
+    help = "Output CSV file with for PIN-only networks. If not specified, written to default output file"
+)
+
+parser.add_argument(
     "output",
     type = str,
     default = "stored_gps.csv",
-    help = "Output file with merged APs and GPS coordinates"
+    help = "Output CSV file with merged APs and GPS coordinates"
 )
 
 args = parser.parse_args()
@@ -100,7 +107,7 @@ if len(unique_APs) < len(APs):
    # print([AP["ESSID"] for AP in duplicates])
     APs = unique_APs
 
-PIN_APs_folder = args.PINs_folder
+PIN_APs_folder = args.pins_folder
 PIN_APs = []
 if (PIN_APs_folder != None):
     for PIN_file in os.listdir(PIN_APs_folder):
@@ -168,5 +175,11 @@ with open(args.output, 'w', encoding="utf-8") as csvfile:
     writer = csv.DictWriter(csvfile, header, delimiter=args.delimiter)
     writer.writeheader()
     writer.writerows(matchedMACs)
-    writer.writerows(matchedMACsPIN)
-
+    
+    if args.pins_output != None:
+        with open(args.pins_output, 'w', encoding="utf-8") as pins_csv:
+            writer = csv.DictWriter(pins_csv, header, delimiter=args.delimiter)
+            writer.writeheader()
+            writer.writerows(matchedMACsPIN)
+    else:
+        writer.writerows(matchedMACsPIN)
