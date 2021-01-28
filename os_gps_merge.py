@@ -209,7 +209,7 @@ if args.kml_output != None:
     
     for row in matchedMACsPIN:
         pnt = kml.newpoint(name=row["ESSID"], coords=[(row[longname],row[latname])])
-        pnt.description = "BSSID: " + row["BSSID"]
+        pnt.description = "BSSID: " + row["BSSID"] + "<br/>" + "Signal: " + row[signal]
         pnt.style = stylePIN
 
     if args.kml_pins != None:
@@ -220,7 +220,7 @@ if args.kml_output != None:
     for row in matchedMACs:
         pnt = kml.newpoint(name=row["ESSID"], coords=[(row[longname],row[latname])])
         pnt.timestamp.when = row["Date"]
-        pnt.description = "BSSID: " + row["BSSID"]
+        pnt.description = "BSSID: " + row["BSSID"] + "<br/>" + "Signal: " + row[signal]
         pnt.style = stylePSK
     
     kml.save(args.kml_output)
