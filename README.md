@@ -69,6 +69,8 @@ optional arguments:
                         Specifies filename for KML output
   --kml-pins KML_PINS   Save PIN-only networks to separate KML file. If not specified,
                         written to default KML file
+  -u UNMATCHED, --unmatched UNMATCHED
+                        Output CSV file with OneShot entries not found in WiGLE
   --pins-output PINS_OUTPUT
                         Output CSV file with for PIN-only networks. If not specified,
                         written to default output file
@@ -116,7 +118,6 @@ Use the `-k` option to save output to KML file. Uses standard settings:
 - integrate DB from https://github.com/drygdryg/wigle_companion
 - choose columns and their order in output .csv
 - matching by time
-- option to print unmatched APs to another file
 - small TODOs
     - parameters
     - add switch for WiGLE encoding
