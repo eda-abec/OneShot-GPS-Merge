@@ -186,6 +186,14 @@ print("[result] Matched {} (~{} %) networks with their coordinates".format(len(m
 if (PIN_APs_folder != None):
     print("[result] Matched {} (~{} %) PIN-only networks with their coordinates".format(len(matchedMACsPIN), round(100 * len(matchedMACsPIN) / len(PIN_APs))))
 
+# convert back to uppercase
+for row in matchedMACs:
+    row["BSSID"] = row["BSSID"].upper()
+
+for row in matchedMACsPIN:
+    row["BSSID"] = row["BSSID"].upper()
+
+
 with open(args.output, 'w', encoding="utf-8") as csvfile:
     writer = csv.DictWriter(csvfile, header, delimiter=args.delimiter)
     writer.writeheader()
