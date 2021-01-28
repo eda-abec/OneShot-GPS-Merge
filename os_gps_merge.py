@@ -80,6 +80,13 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "-u", "--unmatched",
+    type = str,
+    default = None,
+    help = "Output CSV file with OneShot entries not found in WiGLE"
+)
+
+parser.add_argument(
     "--pins-output",
     type = str,
     default = None,
@@ -109,8 +116,8 @@ for row in reader:
     row["BSSID"] = row["BSSID"].lower()
     APs.append(row)
 
-header =  list(APs[0].keys())
-header += [latname] + [longname] + [signal]      # tmp
+orig_header =  list(APs[0].keys())
+header = orig_header + [latname] + [longname] + [signal]      # tmp
 
 print("[OneShot] Loaded {} networks".format(len(APs)))
 
@@ -179,6 +186,17 @@ matchedMACs = [dict(OS_row, **{latname: W_row[latname]}, **{longname: W_row[long
 
 matchedMACsPIN = [dict(OS_row, **{latname: W_row[latname]}, **{longname: W_row[longname]}, **{signal: W_row[signal]}, **{"ESSID": W_row["SSID"]})
                for OS_row in PIN_APs for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
+
+
+if (args.unmatched != None):
+    # this is ugly. I know. But somehow, it doesn't slow down the script much. So whatever.
+    pureMatchedMACs = [OS_row for OS_row in APs for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
+    unmatchedMACs = [OS_row for OS_row in APs if OS_row not in pureMatchedMACs]
+
+    with open(args.unmatched, 'w', encoding="utf-8") as csvfile:
+        writer = csv.DictWriter(csvfile, orig_header, delimiter=args.delimiter)
+        writer.writeheader()
+        writer.writerows(unmatchedMACs)
 
 
 print("[result] Matched {} (~{} %) networks with their coordinates".format(len(matchedMACs), round(100 * len(matchedMACs) / len(APs))))
