@@ -123,7 +123,7 @@ print("[OneShot] Loaded {} networks".format(len(APs)))
 
 unique_APs = {i["BSSID"]:i for i in APs}.values()
 if len(unique_APs) < len(APs):
-    print("[OneShot] Found {} duplicated APs!".format(len(APs) - len(unique_APs)))
+    print("[OneShot] Found {} duplicated networks!".format(len(APs) - len(unique_APs)))
     duplicates = [AP for AP in APs if AP not in unique_APs]
     # to print duplicates, uncomment the following line
    # print([AP["ESSID"] for AP in duplicates])
@@ -145,13 +145,13 @@ if (PIN_APs_folder != None):
     
     unique_PIN_APs = [PIN_row["BSSID"] for OS_row in APs for PIN_row in PIN_APs if OS_row["BSSID"] == PIN_row["BSSID"] and OS_row["WPS PIN"] == PIN_row["WPS PIN"]]
     if len(unique_PIN_APs) > 0:
-        print('[OneShot] Found {} APs in both "{}" and "{}"!'.format(len(unique_PIN_APs), args.OneShot_report, PIN_APs_folder))
+        print('[OneShot] Found {} networks in both "{}" and "{}"!'.format(len(unique_PIN_APs), args.OneShot_report, PIN_APs_folder))
         # for now, uncomment this line to show them
        # print(unique_PIN_APs)
     
     unique_colliding_PIN_APs = [PIN_row["BSSID"] for OS_row in APs for PIN_row in PIN_APs if OS_row["BSSID"] == PIN_row["BSSID"] and OS_row["WPS PIN"] != PIN_row["WPS PIN"]]
     if len(unique_colliding_PIN_APs) > 0:
-        print('[OneShot] Found {} APs in both "{}" and "{}" with different PIN!'.format(len(unique_colliding_PIN_APs), args.OneShot_report, PIN_APs_folder))
+        print('[OneShot] Found {} networks in both "{}" and "{}" with different PIN!'.format(len(unique_colliding_PIN_APs), args.OneShot_report, PIN_APs_folder))
         # for now, uncomment this line to show them
        # print(unique_colliding_PIN_APs)
 
@@ -164,19 +164,20 @@ for file_path in args.WiGLE_file:
     for row in reader:
         locations.append(row)
 
-print("[Wigle] Loaded {} networks".format(len(locations)))
+print("[ Wigle ] Loaded {} networks".format(len(locations)))
 
 
 # this is an optimisation. Will be replaced to make an average of all occurrences, hopefully
 # it filters all non-unique networks and leaves only one with strongest signal, so that the scripts works with less data and runs much faster
 locations = {i["MAC"]:i for i in sorted(locations, key=strongest_signal)}.values()
-print("[Wigle] Shrunk to {} unique MACs".format(len(locations)))
+locations_len = len(locations)
+print("[ Wigle ] Shrunk to {} unique MACs".format(locations_len))
 
 # there is no use in filtering out BT and GSM devices. They will be removed along with non-WPS WiFis
 
 # another optimisation. Depending on input, it can decrease execution time by half
 locations = list(filter(lambda line: "WPS" in line["AuthMode"], locations))
-print("[Wigle] {} of which with WPS".format(len(locations)))
+print("[ Wigle ] {} (~{} %) of which with WPS".format(len(locations), round(100 * len(locations) / locations_len)))
 
 
 
@@ -199,10 +200,10 @@ if (args.unmatched != None):
         writer.writerows(unmatchedMACs)
 
 
-print("[result] Matched {} (~{} %) networks with their coordinates".format(len(matchedMACs), round(100 * len(matchedMACs) / len(APs))))
+print("[ result] Matched {} (~{} %) networks with their coordinates".format(len(matchedMACs), round(100 * len(matchedMACs) / len(APs))))
 
 if (PIN_APs_folder != None):
-    print("[result] Matched {} (~{} %) PIN-only networks with their coordinates".format(len(matchedMACsPIN), round(100 * len(matchedMACsPIN) / len(PIN_APs))))
+    print("[ result] Matched {} (~{} %) PIN-only networks with their coordinates".format(len(matchedMACsPIN), round(100 * len(matchedMACsPIN) / len(PIN_APs))))
 
 # convert back to uppercase
 for row in matchedMACs:
