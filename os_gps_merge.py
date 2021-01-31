@@ -226,28 +226,42 @@ with open(args.output, 'w', encoding="utf-8") as csvfile:
     else:
         writer.writerows(matchedMACsPIN)
 
+
+def matchedMACs_to_kml(matchedMACs, doc, style):
+    for row in matchedMACs:
+            pnt = kml.newpoint(name=row["ESSID"], coords=[(row[longname], row[latname])])
+            pnt.timestamp.when = row.get("Date")
+            pnt.description = "BSSID: {}<br/>Signal: {}".format(row["BSSID"], row[signal])
+            pnt.style = style
+
 if args.kml_output != None:
     stylePSK = simplekml.Style()
     #TODO give then colors and so
     
     stylePIN = simplekml.Style()
-    
-    kml = simplekml.Kml()
-    
-    for row in matchedMACsPIN:
-        pnt = kml.newpoint(name=row["ESSID"], coords=[(row[longname],row[latname])])
-        pnt.description = "BSSID: " + row["BSSID"] + "<br/>" + "Signal: " + row[signal]
-        pnt.style = stylePIN
 
     if args.kml_pins != None:
-        kml.save(args.kml_pins)
         kml = simplekml.Kml()
+        doc = kml.newdocument(name="OneShot PIN-only")
+        
+        matchedMACs_to_kml(matchedMACsPIN, doc, stylePIN)
+        
+        kml.save(args.kml_pins)
+        
+        
+        kml = simplekml.Kml()
+        doc = kml.newdocument(name="OneShot networks")
+        
+        matchedMACs_to_kml(matchedMACs, doc, stylePSK)
+        
+        kml.save(args.kml_output)
+    
+    else:
+        kml = simplekml.Kml()
+        doc = kml.newdocument(name="OneShot networks")
+        
+        matchedMACs_to_kml(matchedMACs, doc, stylePSK)
+        matchedMACs_to_kml(matchedMACsPIN, doc, stylePIN)
+        
+        kml.save(args.kml_output)
 
-    
-    for row in matchedMACs:
-        pnt = kml.newpoint(name=row["ESSID"], coords=[(row[longname],row[latname])])
-        pnt.timestamp.when = row["Date"]
-        pnt.description = "BSSID: " + row["BSSID"] + "<br/>" + "Signal: " + row[signal]
-        pnt.style = stylePSK
-    
-    kml.save(args.kml_output)
