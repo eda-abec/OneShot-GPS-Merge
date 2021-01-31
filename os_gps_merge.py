@@ -107,53 +107,53 @@ args = parser.parse_args()
 
 
 
-APs = []
+nets = []
 
 reader =  csv.DictReader(open(args.OneShot_report, encoding="utf-8"), delimiter=';')
 
 for row in reader:
     # it is faster to convert OneShot reports to lower than vice versa, since there are usually less entries
     row["BSSID"] = row["BSSID"].lower()
-    APs.append(row)
+    nets.append(row)
 
-orig_header =  list(APs[0].keys())
+orig_header =  list(nets[0].keys())
 header = orig_header + [latname] + [longname] + [signal]      # tmp
 
-print("[OneShot] Loaded {} networks".format(len(APs)))
+print("[OneShot] Loaded {} networks".format(len(nets)))
 
-unique_APs = {i["BSSID"]:i for i in APs}.values()
-if len(unique_APs) < len(APs):
-    print("[OneShot] Found {} duplicated networks!".format(len(APs) - len(unique_APs)))
-    duplicates = [AP for AP in APs if AP not in unique_APs]
+unique_nets = {net["BSSID"]:net for net in nets}.values()
+if len(unique_nets) < len(nets):
+    print("[OneShot] Found {} duplicated networks!".format(len(nets) - len(unique_nets)))
+    duplicates = [AP for AP in nets if AP not in unique_nets]
     # to print duplicates, uncomment the following line
    # print([AP["ESSID"] for AP in duplicates])
-    APs = unique_APs
+    nets = unique_nets
 
-PIN_APs_folder = args.pins_folder
-PIN_APs = []
-if (PIN_APs_folder != None):
-    for PIN_file in os.listdir(PIN_APs_folder):
+PIN_nets_folder = args.pins_folder
+PIN_nets = []
+if (PIN_nets_folder != None):
+    for PIN_file in os.listdir(PIN_nets_folder):
         row = {}
-        reader = open(PIN_APs_folder + "/" + PIN_file)     # encoding should not matter for digits only
+        reader = open(PIN_nets_folder + "/" + PIN_file)     # encoding should not matter for digits only
         row["BSSID"] = str(PIN_file).replace(".run", "").lower()
         # add colons. https://stackoverflow.com/a/61669445
         row["BSSID"] = ':'.join(row["BSSID"][i:i+2] for i in range(0,12,2))
         row["WPS PIN"] = reader.readline().replace("\n", "")
      #   row["Date"] = ctime(os.path.getmime(PIN_file))     # TODO
-        PIN_APs.append(row)
-    print("[OneShot] Loaded {} PIN-only networks".format(len(PIN_APs)))
+        PIN_nets.append(row)
+    print("[OneShot] Loaded {} PIN-only networks".format(len(PIN_nets)))
     
-    unique_PIN_APs = [PIN_row["BSSID"] for OS_row in APs for PIN_row in PIN_APs if OS_row["BSSID"] == PIN_row["BSSID"] and OS_row["WPS PIN"] == PIN_row["WPS PIN"]]
-    if len(unique_PIN_APs) > 0:
-        print('[OneShot] Found {} networks in both "{}" and "{}"!'.format(len(unique_PIN_APs), args.OneShot_report, PIN_APs_folder))
+    unique_PIN_nets = [PIN_row["BSSID"] for OS_row in nets for PIN_row in PIN_nets if OS_row["BSSID"] == PIN_row["BSSID"] and OS_row["WPS PIN"] == PIN_row["WPS PIN"]]
+    if len(unique_PIN_nets) > 0:
+        print('[OneShot] Found {} networks in both "{}" and "{}"!'.format(len(unique_PIN_nets), args.OneShot_report, PIN_nets_folder))
         # for now, uncomment this line to show them
-       # print(unique_PIN_APs)
+       # print(unique_PIN_nets)
     
-    unique_colliding_PIN_APs = [PIN_row["BSSID"] for OS_row in APs for PIN_row in PIN_APs if OS_row["BSSID"] == PIN_row["BSSID"] and OS_row["WPS PIN"] != PIN_row["WPS PIN"]]
-    if len(unique_colliding_PIN_APs) > 0:
-        print('[OneShot] Found {} networks in both "{}" and "{}" with different PIN!'.format(len(unique_colliding_PIN_APs), args.OneShot_report, PIN_APs_folder))
+    unique_colliding_PIN_nets = [PIN_row["BSSID"] for OS_row in nets for PIN_row in PIN_nets if OS_row["BSSID"] == PIN_row["BSSID"] and OS_row["WPS PIN"] != PIN_row["WPS PIN"]]
+    if len(unique_colliding_PIN_nets) > 0:
+        print('[OneShot] Found {} networks in both "{}" and "{}" with different PIN!'.format(len(unique_colliding_PIN_nets), args.OneShot_report, PIN_nets_folder))
         # for now, uncomment this line to show them
-       # print(unique_colliding_PIN_APs)
+       # print(unique_colliding_PIN_nets)
 
 locations = []
 for file_path in args.WiGLE_file:
@@ -183,16 +183,16 @@ print("[ Wigle ] {} (~{} %) of which with WPS".format(len(locations), round(100 
 
 # the actual matching
 matchedMACs = [dict(OS_row, **{latname: W_row[latname]}, **{longname: W_row[longname]}, **{signal: W_row[signal]})
-               for OS_row in APs for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
+               for OS_row in nets for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
 
 matchedMACsPIN = [dict(OS_row, **{latname: W_row[latname]}, **{longname: W_row[longname]}, **{signal: W_row[signal]}, **{"ESSID": W_row["SSID"]})
-               for OS_row in PIN_APs for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
+               for OS_row in PIN_nets for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
 
 
 if (args.unmatched != None):
     # this is ugly. I know. But somehow, it doesn't slow down the script much. So whatever.
-    pureMatchedMACs = [OS_row for OS_row in APs for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
-    unmatchedMACs = [OS_row for OS_row in APs if OS_row not in pureMatchedMACs]
+    pureMatchedMACs = [OS_row for OS_row in nets for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
+    unmatchedMACs = [OS_row for OS_row in nets if OS_row not in pureMatchedMACs]
 
     with open(args.unmatched, 'w', encoding="utf-8") as csvfile:
         writer = csv.DictWriter(csvfile, orig_header, delimiter=args.delimiter)
@@ -200,17 +200,17 @@ if (args.unmatched != None):
         writer.writerows(unmatchedMACs)
 
 
-print("[ result] Matched {} (~{} %) networks with their coordinates".format(len(matchedMACs), round(100 * len(matchedMACs) / len(APs))))
+print("[ result] Matched {} (~{} %) networks with their coordinates".format(len(matchedMACs), round(100 * len(matchedMACs) / len(nets))))
 
-if (PIN_APs_folder != None):
-    print("[ result] Matched {} (~{} %) PIN-only networks with their coordinates".format(len(matchedMACsPIN), round(100 * len(matchedMACsPIN) / len(PIN_APs))))
+if (PIN_nets_folder != None):
+    print("[ result] Matched {} (~{} %) PIN-only networks with their coordinates".format(len(matchedMACsPIN), round(100 * len(matchedMACsPIN) / len(PIN_nets))))
 
 # convert back to uppercase
-for row in matchedMACs:
-    row["BSSID"] = row["BSSID"].upper()
+for net in matchedMACs:
+    net["BSSID"] = net["BSSID"].upper()
 
-for row in matchedMACsPIN:
-    row["BSSID"] = row["BSSID"].upper()
+for net in matchedMACsPIN:
+    net["BSSID"] = net["BSSID"].upper()
 
 
 with open(args.output, 'w', encoding="utf-8") as csvfile:
@@ -228,10 +228,10 @@ with open(args.output, 'w', encoding="utf-8") as csvfile:
 
 
 def matchedMACs_to_kml(matchedMACs, doc, style):
-    for row in matchedMACs:
-            pnt = kml.newpoint(name=row["ESSID"], coords=[(row[longname], row[latname])])
-            pnt.timestamp.when = row.get("Date")
-            pnt.description = "BSSID: {}<br/>Signal: {}".format(row["BSSID"], row[signal])
+    for net in matchedMACs:
+            pnt = kml.newpoint(name=net["ESSID"], coords=[(net[longname], net[latname])])
+            pnt.timestamp.when = net.get("Date")
+            pnt.description = "BSSID: {}<br/>Signal: {}".format(net["BSSID"], net[signal])
             pnt.style = style
 
 if args.kml_output != None:
