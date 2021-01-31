@@ -10,10 +10,6 @@ $(OUTPUT):
 benchmark:
 	time $(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv $(OUTPUT) -p pins/
 
-# needs more work
-#matched: $(OUTPUT)
-#	diff $(OUTPUT) stored.csv
-
 clean:
 	rm -f $(OUTPUT)
 
