@@ -168,9 +168,11 @@ for file_path in args.WiGLE_file:
     reader = csv.DictReader(WiGLE_file, delimiter=',')
 
     for row in reader:
-        locations.append(row)
+        # there is no use in filtering out BT and GSM devices. They will be removed along with non-WPS WiFis
+        if "[WPS]" in row["AuthMode"]:
+            locations.append(row)
 
-print("[ Wigle ] Loaded {} networks".format(len(locations)))
+print("[ Wigle ] Loaded {} WPS networks".format(len(locations)))
 
 
 # this is an optimisation. Will be replaced to make an average of all occurrences, hopefully
@@ -178,13 +180,6 @@ print("[ Wigle ] Loaded {} networks".format(len(locations)))
 locations = {i["MAC"]:i for i in sorted(locations, key=strongest_signal)}.values()
 locations_len = len(locations)
 print("[ Wigle ] Shrunk to {} unique MACs".format(locations_len))
-
-# there is no use in filtering out BT and GSM devices. They will be removed along with non-WPS WiFis
-
-# another optimisation. Depending on input, it can decrease execution time by half
-locations = list(filter(lambda line: "WPS" in line["AuthMode"], locations))
-print("[ Wigle ] {} (~{} %) of which with WPS".format(len(locations), round(100 * len(locations) / locations_len)))
-
 
 
 # the actual matching
