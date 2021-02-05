@@ -16,6 +16,18 @@ signal = "RSSI"
 def strongest_signal (AP):
     return int(AP["RSSI"])
 
+# added error handling, original source: https://stackoverflow.com/a/6520795
+def count_lines(filename):
+    try:
+        with open(filename) as f:
+            for i, l in enumerate(f, 1):
+                pass
+            return i - 1        # minus header row
+    except FileNotFoundError:
+        return 0
+
+
+
 def signal_handler(signal, frame):
         print ("Interrupted, exitting...")
         exit(0)
@@ -108,6 +120,12 @@ args = parser.parse_args()
 
 
 nets = []
+
+
+prev_matched = count_lines(args.output)
+if prev_matched > 0:
+    print("[  info ] Previous run matched {} networks".format(prev_matched))
+
 
 reader =  csv.DictReader(open(args.OneShot_report, encoding="utf-8"), delimiter=';')
 
