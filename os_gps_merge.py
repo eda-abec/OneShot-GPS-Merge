@@ -197,11 +197,18 @@ if (args.unmatched != None):
     # this is ugly. I know. But somehow, it doesn't slow down the script much. So whatever.
     pureMatchedMACs = [OS_row for OS_row in nets for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
     unmatchedMACs = [OS_row for OS_row in nets if OS_row not in pureMatchedMACs]
+    
+    if args.pins_output == None:
+        pureMatchedMACsPIN = [OS_row for OS_row in PIN_nets for W_row in locations if OS_row["BSSID"] == W_row["MAC"]]
+        unmatchedMACsPIN = [OS_row for OS_row in PIN_nets if OS_row not in pureMatchedMACsPIN]
+        print(unmatchedMACsPIN)
 
     with open(args.unmatched, 'w', encoding="utf-8") as csvfile:
         writer = csv.DictWriter(csvfile, orig_header, delimiter=args.delimiter)
         writer.writeheader()
         writer.writerows(unmatchedMACs)
+        if args.pins_output == None:
+            writer.writerows(unmatchedMACsPIN)
 
 
 print("[ result] Matched {} (~{} %) networks with their coordinates".format(len(matchedMACs), round(100 * len(matchedMACs) / len(nets))))
