@@ -11,14 +11,14 @@ OUTPUT_PINS_KML = stored_pins.kml
 
 # take all possible inputs and generate all available outputs
 all:
-	$(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv $(OUTPUT) -p pins/ --pins-output stored_pins.csv -k stored_gps.kml --kml-pins stored_pins.kml -u unmatched.csv
+	$(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv $(OUTPUT) -p pins/ --csv-pins-output $(OUTPUT_PINS) -k $(OUTPUT_KML) --kml-pins $(OUTPUT_PINS_KML) -u $(UNMATCHED)
 
 # basic usage
 $(OUTPUT):
-	$(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv $(OUTPUT)
+	$(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv -o $(OUTPUT)
 
 benchmark:
-	time $(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv $(OUTPUT)
+	time $(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv -o $(OUTPUT)
 
 # remove all output files
 clean:
