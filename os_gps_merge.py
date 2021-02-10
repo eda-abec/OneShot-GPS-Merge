@@ -20,7 +20,7 @@ def strongest_signal(AP):
 # added error handling, original source: https://stackoverflow.com/a/6520795
 def count_lines(filename):
     try:
-        with open(filename) as f:
+        with open(str(filename)) as f:
             for i, l in enumerate(f, 1):
                 pass
             return i - 1        # minus header row
@@ -169,8 +169,11 @@ for file_path in args.WiGLE_file:
 
     for row in reader:
         # there is no use in filtering out BT and GSM devices. They will be removed along with non-WPS WiFis
-        if "[WPS]" in row["AuthMode"]:
-            locations.append(row)
+        try:
+            if "[WPS]" in row["AuthMode"]:
+                locations.append(row)
+        except:
+            print('[ WiGLE ] Could not parse "{}"!'.format(row))
 
 print("[ Wigle ] Loaded {} WPS networks".format(len(locations)))
 
