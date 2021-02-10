@@ -117,7 +117,8 @@ Use the `-k` option to save output to KML file. Uses standard settings:
 - better name
 - integrate DB from https://github.com/drygdryg/wigle_companion
 - choose columns and their order in output .csv
-- matching by time
+- matching by time (not a priority, probbably will not be implemented)
+- fuzzy checking (alert about unmatched network within -+hour from matched network)
 - small TODOs
     - parameters
     - add switch for WiGLE encoding
@@ -133,4 +134,3 @@ Based on and Thanks to:
 - [OneShot](https://github.com/drygdryg/OneShot)
 - [WiGLE.net](https://github.com/wiglenet)
 
-See also [OneShot-GPS-Visualizer](https://github.com/eda-abec/OneShot-GPS-Visualizer)
