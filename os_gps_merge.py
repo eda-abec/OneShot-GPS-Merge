@@ -226,7 +226,7 @@ if args.csv_output != None:
         writer.writerows(matchedMACs)
         
         if args.csv_pins_output != None:
-            with open(args.pins_output, 'w', encoding="utf-8") as pins_csv:
+            with open(args.csv_pins_output, 'w', encoding="utf-8") as pins_csv:
                 writer = csv.DictWriter(pins_csv, header, delimiter=args.delimiter)
                 writer.writeheader()
                 writer.writerows(matchedMACsPIN)
