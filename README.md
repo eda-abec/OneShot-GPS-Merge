@@ -8,7 +8,7 @@ Matched coordinates are those with highest signal for given MAC.
 
 You can then feed the result in CSV to [OneShot-GPS-Visualizer](https://github.com/eda-abec/OneShot-GPS-Visualizer), which displays it on map, or use arbitrary service to display KML.
 
-This project is still in development, any suggestions and pull requests are welcome :)
+Any suggestions and pull requests are welcome. :)
 
 ### Requirements
 - Python3 (Python2 is not supported!)
