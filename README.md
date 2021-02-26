@@ -131,6 +131,7 @@ Use the `-k` option to save output to KML file. Uses standard settings:
 - choose columns and their order in output .csv
 - matching by time (not a priority, probbably will not be implemented)
 - fuzzy checking (alert about unmatched network within -+hour from matched network)
+- implement caching of WiGLE inputs
 - small TODOs
     - parameters
     - add switch for WiGLE encoding
