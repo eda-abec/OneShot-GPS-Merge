@@ -11,7 +11,7 @@ OUTPUT_PINS_KML = stored_pins.kml
 
 # take all possible inputs and generate all available outputs
 all:
-	$(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv $(OUTPUT) -p pins/ --csv-pins-output $(OUTPUT_PINS) -k $(OUTPUT_KML) --kml-pins $(OUTPUT_PINS_KML) -u $(UNMATCHED)
+	$(INTERPRETER) $(SCRIPT) stored.csv wigle/WigleWifi_*.csv -o $(OUTPUT) -p pins/ --csv-pins-output $(OUTPUT_PINS) -k $(OUTPUT_KML) --kml-pins $(OUTPUT_PINS_KML) -u $(UNMATCHED)
 
 # basic usage
 $(OUTPUT):
